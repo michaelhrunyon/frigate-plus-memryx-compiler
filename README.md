@@ -57,14 +57,14 @@ The MemryX Neural Compiler (`mx_nc`) should be installed on your host machine. T
 Download the standalone script directly without cloning the repository:
 
 ```bash
-curl -sSL [https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh](https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh) -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
+curl -sSL https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
 ```
 
 ### Option 2: Clone the Repository
 Clone the full repository onto your host machine:
 
 ```bash
-git clone [https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git](https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git)
+git clone https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git
 cd frigate-plus-memryx-compiler
 chmod +x frigate_plus_memryx_compiler.sh
 ```
