@@ -172,8 +172,8 @@ if [ -n "${MX_NC_BIN}" ]; then
 
   cd "${HOST_TARGET_DIR}"
 
-  # Set compiler effort flag with environment variable override (lazy, normal, hard)
   MX_EFFORT="${MX_EFFORT:-normal}"
+  MX_THREADS="${MX_THREADS:-max}"
 
   MX_CMD=(
     "${MX_NC_BIN}"
@@ -185,9 +185,14 @@ if [ -n "${MX_NC_BIN}" ]; then
     --dfp_fname "${BASE_NAME}.dfp"
   )
 
-  # Append optional input format if explicitly defined in environment (e.g. MX_INPUT_FORMAT=BF16)
-  if [ -n "${MX_INPUT_FORMAT}" ]; then
-    MX_CMD+=("--input_format" "${MX_INPUT_FORMAT}")
+  # Append multi-processing flag if effort level is set to hard
+  if [ "${MX_EFFORT}" = "hard" ]; then
+    MX_CMD+=("-j" "${MX_THREADS}")
+  fi
+
+  # Append experimental double precision if requested
+  if [ "${MX_AUTO_DP}" = "true" ]; then
+    MX_CMD+=("--exp_auto_dp")
   fi
 
   "${MX_CMD[@]}"
