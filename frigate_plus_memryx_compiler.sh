@@ -172,7 +172,27 @@ if [ -n "${MX_NC_BIN}" ]; then
 
   cd "${HOST_TARGET_DIR}"
 
-  "${MX_NC_BIN}" -m "${BASE_NAME}.onnx" -c 4 --autocrop -v --dfp_fname "${BASE_NAME}.dfp"
+  # Set compiler performance flags with environment variable overrides
+  MX_THREADS="${MX_THREADS:-max}"
+  MX_EFFORT="${MX_EFFORT:-medium}"
+
+  MX_CMD=(
+    "${MX_NC_BIN}"
+    -m "${BASE_NAME}.onnx"
+    -c 4
+    -j "${MX_THREADS}"
+    --effort "${MX_EFFORT}"
+    --autocrop
+    -v
+    --dfp_fname "${BASE_NAME}.dfp"
+  )
+
+  # Append optional output format if explicitly defined in environment (e.g. MX_OUTPUT_FORMAT=BF16)
+  if [ -n "${MX_OUTPUT_FORMAT}" ]; then
+    MX_CMD+=("--output_format" "${MX_OUTPUT_FORMAT}")
+  fi
+
+  "${MX_CMD[@]}"
 
   echo "Packaging output files into ${BASE_NAME}.zip..."
 
