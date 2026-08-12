@@ -9,6 +9,8 @@ A Bash automation script that fetches base or fine-tuned models directly from Fr
 ## Features
 
 - **Automated Authentication:** Uses your running Frigate Docker container to handle token generation and presigned S3 URL retrieval from Frigate+.
+- **Multi-Threaded Compilation:** Defaults to max CPU threads (`-j max`) for fast compilation times on multi-core host systems.
+- **Configurable Build Parameters:** Supports environment variable overrides for compilation effort, precision formats, and thread limits.
 - **Smart Container Resolution:** Auto-detects running Frigate containers even if named differently (e.g., `frigate-ptz` or `frigate-beta`), with an environment variable override option.
 - **Host-Native Output:** Writes files directly to your host filesystem without messing with Docker volume paths or permissions.
 - **Label Map Extraction:** Automatically parses the model's JSON manifest and creates a numerical, line-separated `_labels.txt` file for Frigate.
@@ -57,14 +59,14 @@ The MemryX Neural Compiler (`mx_nc`) should be installed on your host machine. T
 Download the standalone script directly without cloning the repository:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
+curl -sSL [https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh](https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh) -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
 ```
 
 ### Option 2: Clone the Repository
 Clone the full repository onto your host machine:
 
 ```bash
-git clone https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git
+git clone [https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git](https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git)
 cd frigate-plus-memryx-compiler
 chmod +x frigate_plus_memryx_compiler.sh
 ```
@@ -90,6 +92,25 @@ Pass the parameters directly for non-interactive execution or automated workflow
 #### Example:
 ```bash
 ./frigate_plus_memryx_compiler.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_320
+```
+
+---
+
+## Advanced Options & Environment Variables
+
+You can customize compilation behavior by exporting environment variables prior to running the script:
+
+| Environment Variable | Default | Description |
+| :--- | :--- | :--- |
+| `MX_THREADS` | `max` | Controls compiler CPU multi-threading. Set to a lower number (e.g., `4`) for thermally constrained or low-power hosts. |
+| `MX_EFFORT` | `medium` | Optimization search level (`low`, `medium`, `hard`). Set to `hard` for exhaustive search passes. |
+| `MX_OUTPUT_FORMAT` | *(Compiler Default)* | Target weight format (e.g., `BF16`). Omit to preserve default `GBFloat80` 8-bit quantization. |
+| `FRIGATE_CONTAINER_NAME` | `frigate` | Overrides the target Docker container name for API calls. |
+| `MX_VENV_PATH` | *(Auto)* | Explicit path to the Python virtual environment containing `mx_nc`. |
+
+#### Example using custom flags:
+```bash
+MX_EFFORT=hard MX_OUTPUT_FORMAT=BF16 ./frigate_plus_memryx_compiler.sh
 ```
 
 ---
