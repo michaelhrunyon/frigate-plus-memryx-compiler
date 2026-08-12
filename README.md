@@ -53,16 +53,21 @@ The MemryX Neural Compiler (`mx_nc`) should be installed on your host machine. T
 
 ## Installation
 
-1. Clone this repository:
-   ```bash
-   git clone [https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git](https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git)
-   cd frigate-plus-memryx-compiler
-   ```
+### Option 1: Quick Download (Script Only)
+Download the standalone script directly without cloning the repository:
 
-2. Make the script executable:
-   ```bash
-   chmod +x download_and_compile_model.sh
-   ```
+```bash
+curl -sSL [https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh](https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh) -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
+```
+
+### Option 2: Clone the Repository
+Clone the full repository onto your host machine:
+
+```bash
+git clone [https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git](https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git)
+cd frigate-plus-memryx-compiler
+chmod +x frigate_plus_memryx_compiler.sh
+```
 
 ---
 
@@ -72,19 +77,19 @@ The MemryX Neural Compiler (`mx_nc`) should be installed on your host machine. T
 Run the script without arguments to be prompted for the Model ID, Target Directory, and Base Filename:
 
 ```bash
-./download_and_compile_model.sh
+./frigate_plus_memryx_compiler.sh
 ```
 
 ### Option 2: Command-Line Arguments
 Pass the parameters directly for non-interactive execution or automated workflows:
 
 ```bash
-./download_and_compile_model.sh <MODEL_ID> <TARGET_DIR> <BASE_NAME>
+./frigate_plus_memryx_compiler.sh <MODEL_ID> <TARGET_DIR> <BASE_NAME>
 ```
 
 #### Example:
 ```bash
-./download_and_compile_model.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_320
+./frigate_plus_memryx_compiler.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_320
 ```
 
 ---
