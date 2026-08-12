@@ -58,14 +58,14 @@ The MemryX Neural Compiler (`mx_nc`) should be installed on your host machine. T
 Download the standalone script directly without cloning the repository:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
+curl -sSL [https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh](https://raw.githubusercontent.com/michaelhrunyon/frigate-plus-memryx-compiler/main/frigate_plus_memryx_compiler.sh) -o frigate_plus_memryx_compiler.sh && chmod +x frigate_plus_memryx_compiler.sh
 ```
 
 ### Option 2: Clone the Repository
 Clone the full repository onto your host machine:
 
 ```bash
-git clone https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git
+git clone [https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git](https://github.com/michaelhrunyon/frigate-plus-memryx-compiler.git)
 cd frigate-plus-memryx-compiler
 chmod +x frigate_plus_memryx_compiler.sh
 ```
@@ -90,4 +90,66 @@ Pass the parameters directly for non-interactive execution or automated workflow
 
 #### Example:
 ```bash
-./frigate_plus_memryx_compiler.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_32
+./frigate_plus_memryx_compiler.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_320
+```
+
+---
+
+## Advanced Options & Environment Variables
+
+You can customize compilation behavior by exporting environment variables prior to running the script:
+
+| Environment Variable | Default | Description |
+| :--- | :--- | :--- |
+| `MX_EFFORT` | `normal` | Optimization search level (`lazy`, `normal`, `hard`). |
+| `MX_THREADS` | `max` | Number of parallel CPU processes used when `MX_EFFORT=hard` (`-j`). |
+| `MX_AUTO_DP` | `false` | Set to `true` to enable experimental 16-bit weight precision (`--exp_auto_dp`). |
+| `FRIGATE_CONTAINER_NAME` | `frigate` | Overrides the target Docker container name for API calls. |
+| `MX_VENV_PATH` | *(Auto)* | Explicit path to the Python virtual environment containing `mx_nc`. |
+
+#### Example using custom flags:
+```bash
+MX_EFFORT=hard MX_THREADS=max MX_AUTO_DP=true ./frigate_plus_memryx_compiler.sh
+```
+
+---
+
+## Generated Files
+
+Upon successful compilation, the target directory will contain:
+
+| File | Description |
+| :--- | :--- |
+| `<BASE_NAME>.zip` | Production archive containing `.dfp` and post-processing ONNX files. |
+| `<BASE_NAME>_labels.txt` | Line-separated label map for Frigate. |
+| `<BASE_NAME>.json` | Original Frigate+ manifest metadata. |
+
+*Note: Intermediate `.onnx`, `.dfp`, and log files are automatically removed after the archive is created.*
+
+---
+
+## Frigate `config.yml` Example
+
+Add the compiled model to your Frigate configuration:
+
+```yaml
+detectors:
+  memx0:
+    type: memryx
+    device: PCIe:0
+
+model:
+  model_type: yolo-generic  # Set to 'yolonas' for YOLO-NAS models
+  path: /config/model_cache/frigate_plus_models/yolonas_320.zip
+  labelmap_path: /config/model_cache/frigate_plus_models/yolonas_320_labels.txt
+  width: 320
+  height: 320
+  input_tensor: nchw
+  input_dtype: float
+```
+
+---
+
+## License
+
+MIT License. Feel free to modify and distribute.
