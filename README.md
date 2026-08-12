@@ -103,11 +103,10 @@ You can customize compilation behavior by exporting environment variables prior 
 | Environment Variable | Default | Description |
 | :--- | :--- | :--- |
 | `MX_THREADS` | `max` | Controls compiler CPU multi-threading. Set to a lower number (e.g., `4`) for thermally constrained or low-power hosts. |
-| `MX_EFFORT` | `medium` | Optimization search level (`low`, `medium`, `hard`). Set to `hard` for exhaustive search passes. |
+| `MX_EFFORT` | `normal` | Optimization search level (`lazy`, `normal`, `hard`). Set to `hard` for exhaustive search passes. |
 | `MX_OUTPUT_FORMAT` | *(Compiler Default)* | Target weight format (e.g., `BF16`). Omit to preserve default `GBFloat80` 8-bit quantization. |
 | `FRIGATE_CONTAINER_NAME` | `frigate` | Overrides the target Docker container name for API calls. |
 | `MX_VENV_PATH` | *(Auto)* | Explicit path to the Python virtual environment containing `mx_nc`. |
-
 #### Example using custom flags:
 ```bash
 MX_EFFORT=hard MX_OUTPUT_FORMAT=BF16 ./frigate_plus_memryx_compiler.sh
