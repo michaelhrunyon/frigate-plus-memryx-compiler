@@ -9,7 +9,7 @@ A Bash automation script that fetches base or fine-tuned models directly from Fr
 ## Features
 
 - **Automated Authentication:** Uses your running Frigate Docker container to handle token generation and presigned S3 URL retrieval from Frigate+.
-- **Configurable Build Parameters:** Supports environment variable overrides for optimization effort (`MX_EFFORT`) and input packing format (`MX_INPUT_FORMAT`).
+- **Configurable Build Parameters:** Supports environment variable overrides for compilation effort (`MX_EFFORT`), multi-processing (`MX_THREADS`), and experimental 16-bit precision (`MX_AUTO_DP`).
 - **Smart Container Resolution:** Auto-detects running Frigate containers even if named differently (e.g., `frigate-ptz` or `frigate-beta`), with an environment variable override option.
 - **Host-Native Output:** Writes files directly to your host filesystem without messing with Docker volume paths or permissions.
 - **Label Map Extraction:** Automatically parses the model's JSON manifest and creates a numerical, line-separated `_labels.txt` file for Frigate.
@@ -90,65 +90,4 @@ Pass the parameters directly for non-interactive execution or automated workflow
 
 #### Example:
 ```bash
-./frigate_plus_memryx_compiler.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_320
-```
-
----
-
-## Advanced Options & Environment Variables
-
-You can customize compilation behavior by exporting environment variables prior to running the script:
-
-| Environment Variable | Default | Description |
-| :--- | :--- | :--- |
-| `MX_EFFORT` | `normal` | Optimization search level (`lazy`, `normal`, `hard`). Set to `hard` for exhaustive search passes. |
-| `MX_INPUT_FORMAT` | *(Compiler Default)* | Host-to-chip input packing format (`FP32`, `BF16`, `GBFloat80`, `RGB888`). |
-| `FRIGATE_CONTAINER_NAME` | `frigate` | Overrides the target Docker container name for API calls. |
-| `MX_VENV_PATH` | *(Auto)* | Explicit path to the Python virtual environment containing `mx_nc`. |
-
-#### Example using custom flags:
-```bash
-MX_EFFORT=hard MX_INPUT_FORMAT=BF16 ./frigate_plus_memryx_compiler.sh
-```
-
----
-
-## Generated Files
-
-Upon successful compilation, the target directory will contain:
-
-| File | Description |
-| :--- | :--- |
-| `<BASE_NAME>.zip` | Production archive containing `.dfp` and post-processing ONNX files. |
-| `<BASE_NAME>_labels.txt` | Line-separated label map for Frigate. |
-| `<BASE_NAME>.json` | Original Frigate+ manifest metadata. |
-
-*Note: Intermediate `.onnx`, `.dfp`, and log files are automatically removed after the archive is created.*
-
----
-
-## Frigate `config.yml` Example
-
-Add the compiled model to your Frigate configuration:
-
-```yaml
-detectors:
-  memx0:
-    type: memryx
-    device: PCIe:0
-
-model:
-  model_type: yolo-generic  # Set to 'yolonas' for YOLO-NAS models
-  path: /config/model_cache/frigate_plus_models/yolonas_320.zip
-  labelmap_path: /config/model_cache/frigate_plus_models/yolonas_320_labels.txt
-  width: 320
-  height: 320
-  input_tensor: nchw
-  input_dtype: float
-```
-
----
-
-## License
-
-MIT License. Feel free to modify and distribute.
+./frigate_plus_memryx_compiler.sh f078cbd40c60564a3b091fccd228b439 /docker/appdata/frigate/config/model_cache/frigate_plus_models yolonas_32
