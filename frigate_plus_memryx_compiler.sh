@@ -172,24 +172,22 @@ if [ -n "${MX_NC_BIN}" ]; then
 
   cd "${HOST_TARGET_DIR}"
 
-  # Set compiler performance flags with environment variable overrides
-  MX_THREADS="${MX_THREADS:-max}"
+  # Set compiler effort flag with environment variable override (lazy, normal, hard)
   MX_EFFORT="${MX_EFFORT:-normal}"
 
   MX_CMD=(
     "${MX_NC_BIN}"
     -m "${BASE_NAME}.onnx"
     -c 4
-    -j "${MX_THREADS}"
     --effort "${MX_EFFORT}"
     --autocrop
     -v
     --dfp_fname "${BASE_NAME}.dfp"
   )
 
-  # Append optional output format if explicitly defined in environment (e.g. MX_OUTPUT_FORMAT=BF16)
-  if [ -n "${MX_OUTPUT_FORMAT}" ]; then
-    MX_CMD+=("--output_format" "${MX_OUTPUT_FORMAT}")
+  # Append optional input format if explicitly defined in environment (e.g. MX_INPUT_FORMAT=BF16)
+  if [ -n "${MX_INPUT_FORMAT}" ]; then
+    MX_CMD+=("--input_format" "${MX_INPUT_FORMAT}")
   fi
 
   "${MX_CMD[@]}"
