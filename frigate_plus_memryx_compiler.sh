@@ -107,7 +107,7 @@ if [ -z "${CUSTOM_NAME}" ]; then
   CUSTOM_NAME="${INPUT_NAME:-$MODEL_ID}"
 fi
 
-BASE_NAME=$(echo "${CUSTOM_NAME}" \vert{} tr -d '\r\n ' \vert{} sed -E 's/\.(onnx\vert{}json\vert{}dfp\vert{}zip\vert{}txt)$//i')
+BASE_NAME=$(echo "${CUSTOM_NAME}" | tr -d '\r\n ' | sed -E 's/\.(onnx|json|dfp|zip|txt)$//i')
 
 # ------------------------------------------------------------------------------
 # 5. Fetch Download URL & Manifest via Container
@@ -139,7 +139,7 @@ fi
 # ------------------------------------------------------------------------------
 # 6. Download ONNX & Write Manifest + Labels
 # ------------------------------------------------------------------------------
-echo "Downloading ${BASE_NAME}.onnx to${HOST_TARGET_DIR}..."
+echo "Downloading ${BASE_NAME}.onnx to ${HOST_TARGET_DIR}..."
 curl -# -o "${HOST_TARGET_DIR}/${BASE_NAME}.onnx" "${SIGNED_URL}"
 
 echo "Saving ${BASE_NAME}.json manifest..."
@@ -175,7 +175,7 @@ if [ -n "${MX_NC_BIN}" ]; then
   "${MX_NC_BIN}" -m "${BASE_NAME}.onnx" -c 4 --autocrop -v --dfp_fname "${BASE_NAME}.dfp"
 
   echo "Packaging output files into ${BASE_NAME}.zip..."
-  
+
   ZIP_FILES=("${BASE_NAME}.dfp")
   [ -f "${BASE_NAME}_post.onnx" ] && ZIP_FILES+=("${BASE_NAME}_post.onnx")
   [ -f "${BASE_NAME}_crop.onnx" ] && ZIP_FILES+=("${BASE_NAME}_crop.onnx")
